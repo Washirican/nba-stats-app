@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NBA Shotcharts Home</title>
+</head>
+<body>
+  <h1>Player List</h1>
+  {% for player in players %}
+    <p>{{ player.first_name }} {{ player.last_name }} </p>
+  {% endfor %}
+</body>
+</html>
