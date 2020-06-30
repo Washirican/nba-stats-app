@@ -26,7 +26,7 @@
               <a href="{% url 'player-game-shot-list' player_id=game.1 season_year=game.0 game_id=game.6  %}">Shot List</a>
           </td>
           <td>
-              <a href="#">Shot Chart</a>
+              <a href="{% url 'player-game-shot-chart' player_id=game.1 season_year=game.0 game_id=game.6  %}">Shot Chart</a>
           </td>
 
           {% for data in game %}

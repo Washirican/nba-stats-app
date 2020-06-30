@@ -17,5 +17,9 @@ urlpatterns = [
          views.player_game_shot_list,
          name='player-game-shot-list'),
 
+    path('player/<str:player_id>/<str:season_year>/<str:game_id>/shot_chart/',
+         views.player_game_shot_chart,
+         name='player-game-shot-chart'),
+
     path('about/', views.about, name='shotcharts-about'),
 ]

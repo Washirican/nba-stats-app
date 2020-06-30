@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from .models import Player
+from django.shortcuts import render, redirect
 import requests
 import json
+import matplotlib.pyplot as plt
 
 
 HEADERS = {
@@ -210,10 +210,15 @@ def get_shot_list_data(player_id, season_year, game_id):
     return player_game_shot_list_data
 
 
-def plot_shortchart(all_shots, player_name, team_name, matchup, game_date,
-                    scoring_headline):
-    # TODO D. Rodriguez 2020-04-22: Cleanup variable quantity, maybe read
-    #  data directly from all_shots?
+def plot_short_chart(all_shot_data):
+    all_shot_data_list = []
+
+    name = all_shot_data['name']
+    headers = all_shot_data['headers']
+    row_set = all_shot_data['rowSet']
+
+    for shot in row_set:
+        all_shot_data_list.append(dict(zip(headers, shot)))
 
     x_all = []
     y_all = []
@@ -224,7 +229,7 @@ def plot_shortchart(all_shots, player_name, team_name, matchup, game_date,
     x_miss = []
     y_miss = []
 
-    for shot in all_shots:
+    for shot in all_shot_data_list:
         x_all.append(shot['LOC_X'])
         y_all.append(shot['LOC_Y'])
 
@@ -235,9 +240,6 @@ def plot_shortchart(all_shots, player_name, team_name, matchup, game_date,
             x_miss.append(shot['LOC_X'])
             y_miss.append(shot['LOC_Y'])
 
-    # TODO D. Rodriguez 2020-04-22: Add shot info to each shot marker
-    #  while hovering
-
     im = plt.imread('shotchart-blue.png')
     fig, ax = plt.subplots()
     ax.imshow(im, extent=[-260, 260, -65, 424])
@@ -245,7 +247,8 @@ def plot_shortchart(all_shots, player_name, team_name, matchup, game_date,
     ax.scatter(x_miss, y_miss, marker='x', c='red')
     ax.scatter(x_made, y_made, facecolors='none', edgecolors='green')
 
-    plt.title(f'{player_name} ({team_name})\n{scoring_headline}\n{matchup} {game_date}')
+    # plt.title(f'{player_name} ({team_name})\n{scoring_headline}\n{matchup} {game_date}')
+    plt.title(f'Shot Chart')
     ax.axes.xaxis.set_visible(False)
     ax.axes.yaxis.set_visible(False)
 
@@ -302,8 +305,13 @@ def player_game_shot_list(request, player_id, season_year, game_id):
     return render(request, 'shotcharts/player_game_shot_list.html', context)
 
 
-def player_game_shot_chart(request):
+def player_game_shot_chart(request, player_id, season_year, game_id):
     """Plot game shot chart"""
+    player_game_shot_list_data = get_shot_list_data(player_id, season_year, game_id)
+    plot_short_chart(player_game_shot_list_data)
+
+    # return render(request)
+    return redirect('shotcharts/player_game_shot_list.html')
 
 
 def about(request):
