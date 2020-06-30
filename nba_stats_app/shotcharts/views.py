@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
-import requests
+import base64
+import io
 import json
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+import urllib
 
+import matplotlib.pyplot as plt
+import requests
+from django.shortcuts import render
+
+# TODO (D. Rodriguez 2020-06-30): Add error catching
+# TODO (D. Rodriguez 2020-06-30): Improve looks
+# TODO (D. Rodriguez 2020-06-30): Improve player list sorting
 
 HEADERS = {
         'Host': 'stats.nba.com',
@@ -47,29 +52,6 @@ def get_player_list():
     return players
 
 
-# def get_player_seasons(player_id):
-#     """Get player career stats per player ID"""
-#     parameters = {
-#         'LeagueID': '00',
-#         'PerMode': 'PerGame',
-#         'PlayerID': player_id
-#         }
-#
-#     endpoint = 'playerprofilev2'
-#     request_url = f'https://stats.nba.com/stats/{endpoint}?'
-#
-#     response = requests.get(request_url, headers=HEADERS, params=parameters)
-#     player_career_stats_dict = \
-#         json.loads(response.content.decode())['resultSets']
-#
-#     # player_career_seasons = []
-#     #
-#     # for season in player_career_stats_dict:
-#     #     player_career_seasons.append(season[1])
-#
-#     return player_career_stats_dict
-
-
 def get_player_common_info(player_id):
     """Get player details"""
     parameters = {
@@ -82,7 +64,6 @@ def get_player_common_info(player_id):
 
     player_common_info = json.loads(response.content.decode())['resultSets'][0]
     player_headline_stats = json.loads(response.content.decode())['resultSets'][1]
-    # player_available_seasons = json.loads(response.content.decode())['resultSets'][2]
 
     return player_common_info, player_headline_stats
 
@@ -207,15 +188,37 @@ def get_player_shot_list(player_id, season_year, game_id):
     # clean_response = clean_data(response)
     # all_shot_data = clean_response['Shot_Chart_Detail']
 
-    player_game_shot_list_data = json.loads(response.content.decode())['resultSets'][0]
+    player_game_shot_list = json.loads(response.content.decode())['resultSets'][0]
 
-    return player_game_shot_list_data
+    return player_game_shot_list
 
 
-def plot_player_short_chart(player_game_shot_list):
+def get_game_box_score_summary(game_id):
+    """Get game Box Score for specified game."""
+    parameters = {
+        'GameID': game_id,
+        }
+
+    endpoint = 'boxscoresummaryv2'
+    request_url = f'https://stats.nba.com/stats/{endpoint}?'
+
+    response = requests.get(request_url, headers=HEADERS, params=parameters)
+    # clean_response = clean_data(response)
+    # all_shot_data = clean_response['Shot_Chart_Detail']
+
+    game_box_score_summary = json.loads(
+            response.content.decode()
+            )['resultSets'][0]
+
+    return game_box_score_summary
+
+
+def plot_player_short_chart(player_game_shot_list, player_name, team_name,
+                            matchup, game_date, scoring_headline):
+
     all_shot_data_list = []
 
-    name = player_game_shot_list['name']
+    # name = player_game_shot_list['name']
     headers = player_game_shot_list['headers']
     row_set = player_game_shot_list['rowSet']
 
@@ -249,11 +252,17 @@ def plot_player_short_chart(player_game_shot_list):
     ax.scatter(x_miss, y_miss, marker='x', c='red')
     ax.scatter(x_made, y_made, facecolors='none', edgecolors='green')
 
-    plt.title(f'Shot Chart')
+    plt.title(
+            f'{player_name} ({team_name})\n'
+            f'{scoring_headline}\n'
+            f'{matchup} {game_date}'
+            )
+
     ax.axes.xaxis.set_visible(False)
     ax.axes.yaxis.set_visible(False)
 
-    plt.show()
+    # plt.show()
+    return plt
 
 
 # NOTE (D. Rodriguez 2020-06-28): context variable needs to be a list of
@@ -315,10 +324,48 @@ def player_game_shot_chart(request, player_id, season_year, game_id):
             player_id,
             season_year,
             game_id)
-    plot_player_short_chart(player_game_shot_list)
-    context = {}
-    # return render(request)
-    return render(request, 'shotcharts/player_game_shot_chart.html', context)
+
+    player_season_game_log = get_player_game_log(
+            player_id,
+            season_year,
+            'Regular Season'
+            )
+
+    for game in player_season_game_log['rowSet']:
+        if game_id in game:
+            player_name = game[2]
+            team_name = game[4]
+            matchup = game[8]
+            game_date = game[7][:10]
+            scoring_headline = f'{game[30]} points on {game[11]}/{game[12]} shooting ' \
+                               f'({game[14]}/{game[15]} from three)'
+
+    plt = plot_player_short_chart(
+            player_game_shot_list,
+            player_name,
+            team_name,
+            matchup,
+            game_date,
+            scoring_headline,
+            )
+
+    # ======================================================================= #
+    # NOTE (D. Rodriguez 2020-06-30): Tutorial for getting a matplotlib plot
+    # to django template
+
+    # plt.plot(range(10))
+
+    fig = plt.gcf()
+
+    # Convert graph into dtring buffer and then convert 64 bit code into image
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png')
+    buf.seek(0)
+    string = base64.b64encode(buf.read())
+    uri = urllib.parse.quote(string)
+
+    return render(request, 'shotcharts/player_game_shot_chart.html', {'data': uri})
+    # ======================================================================= #
 
 
 def about(request):
