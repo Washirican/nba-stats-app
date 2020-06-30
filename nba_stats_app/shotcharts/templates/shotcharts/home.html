@@ -4,9 +4,14 @@
   <title>NBA Shotcharts Home</title>
 </head>
 <body>
-  <h1>Player List</h1>
-  {% for player in players %}
-    <p>{{ player.first_name }} {{ player.last_name }} </p>
+  <h1>NBA Shotcharts Home</h1>
+  <h2>Player List</h2>
+
+  {% for player in player_list %}
+    <div>
+      <a href="{% url 'player-profile' player.player_id %}">{{ player.full_name }}</a>
+    </div>
   {% endfor %}
+
 </body>
 </html>
