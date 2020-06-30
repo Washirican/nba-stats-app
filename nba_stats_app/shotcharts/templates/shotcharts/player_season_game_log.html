@@ -16,11 +16,11 @@
     <table>
         <th>Shot List</th>
         <th>Shot Chart</th>
-      {%for header in player_season_gamelog.headers %}
+      {%for header in player_season_game_log.headers %}
         <th>{{ header }} </th>
       {% endfor %}
 
-      {% for game in player_season_gamelog.rowSet %}
+      {% for game in player_season_game_log.rowSet %}
         <tr>
           <td>
               <a href="{% url 'player-game-shot-list' player_id=game.1 season_year=game.0 game_id=game.6  %}">Shot List</a>

@@ -14,11 +14,11 @@
 <h1>Player Game Shot List</h1>
 
     <table>
-      {%for header in player_game_shot_list_data.headers %}
+      {%for header in player_game_shot_list.headers %}
         <th>{{ header }} </th>
       {% endfor %}
 
-      {% for shot in player_game_shot_list_data.rowSet %}
+      {% for shot in player_game_shot_list.rowSet %}
         <tr>
           {% for data in shot %}
             <td>{{ data }}</td>

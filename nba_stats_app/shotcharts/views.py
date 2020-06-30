@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 import requests
 import json
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
@@ -102,7 +104,7 @@ def get_player_seasons(player_id):
     return player_available_season_stats
 
 
-def get_player_gamelog(player_id, season_year, season_type):
+def get_player_game_log(player_id, season_year, season_type):
     parameters = {
         'DateFrom': '',
         'DateTo': '',
@@ -139,7 +141,7 @@ def get_player_gamelog(player_id, season_year, season_type):
     return player_season_gamelog
 
 
-def get_shot_list_data(player_id, season_year, game_id):
+def get_player_shot_list(player_id, season_year, game_id):
     parameters = {
         'AheadBehind': '',
         'CFID': '',
@@ -210,12 +212,12 @@ def get_shot_list_data(player_id, season_year, game_id):
     return player_game_shot_list_data
 
 
-def plot_short_chart(all_shot_data):
+def plot_player_short_chart(player_game_shot_list):
     all_shot_data_list = []
 
-    name = all_shot_data['name']
-    headers = all_shot_data['headers']
-    row_set = all_shot_data['rowSet']
+    name = player_game_shot_list['name']
+    headers = player_game_shot_list['headers']
+    row_set = player_game_shot_list['rowSet']
 
     for shot in row_set:
         all_shot_data_list.append(dict(zip(headers, shot)))
@@ -247,7 +249,6 @@ def plot_short_chart(all_shot_data):
     ax.scatter(x_miss, y_miss, marker='x', c='red')
     ax.scatter(x_made, y_made, facecolors='none', edgecolors='green')
 
-    # plt.title(f'{player_name} ({team_name})\n{scoring_headline}\n{matchup} {game_date}')
     plt.title(f'Shot Chart')
     ax.axes.xaxis.set_visible(False)
     ax.axes.yaxis.set_visible(False)
@@ -281,37 +282,43 @@ def player_profile(request, player_id):
     return render(request, 'shotcharts/player_profile.html', context)
 
 
-def player_season_gamelog(request, player_id, season_year):
+def player_season_game_log(request, player_id, season_year):
     """Ger all games for a given season for a given player"""
-    player_season_gamelog = get_player_gamelog(
+    player_season_game_log = get_player_game_log(
             player_id,
             season_year,
             'Regular Season'
             )
 
     context = {
-        'player_season_gamelog': player_season_gamelog,
+        'player_season_game_log': player_season_game_log,
         }
-    return render(request, 'shotcharts/player_season_gamelog.html', context)
+    return render(request, 'shotcharts/player_season_game_log.html', context)
 
 
 def player_game_shot_list(request, player_id, season_year, game_id):
     """Get player specific game shot chart."""
-    player_game_shot_list_data = get_shot_list_data(player_id, season_year, game_id)
+    player_game_shot_list = get_player_shot_list(
+            player_id,
+            season_year,
+            game_id)
 
     context = {
-        'player_game_shot_list_data': player_game_shot_list_data,
+        'player_game_shot_list': player_game_shot_list,
         }
     return render(request, 'shotcharts/player_game_shot_list.html', context)
 
 
 def player_game_shot_chart(request, player_id, season_year, game_id):
     """Plot game shot chart"""
-    player_game_shot_list_data = get_shot_list_data(player_id, season_year, game_id)
-    plot_short_chart(player_game_shot_list_data)
-
+    player_game_shot_list = get_player_shot_list(
+            player_id,
+            season_year,
+            game_id)
+    plot_player_short_chart(player_game_shot_list)
+    context = {}
     # return render(request)
-    return redirect('shotcharts/player_game_shot_list.html')
+    return render(request, 'shotcharts/player_game_shot_chart.html', context)
 
 
 def about(request):

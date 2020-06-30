@@ -8,7 +8,7 @@
     }
   </style>
 
-  <title>NBA Shotcharts Home: Player Profile</title>
+  <title>NBA Shot Charts Home: Player Profile</title>
 </head>
 <body>
   <h1>Player Profile</h1>
@@ -52,7 +52,7 @@
 
       {% for season in player_available_season_stats.rowSet %}
         <tr>
-          <td><a href="{% url 'player-season-gamelog' player_id=season.0 season_year=season.1 %}">Season Detail</a></td>
+          <td><a href="{% url 'player-season-game-log' player_id=season.0 season_year=season.1 %}">Season Detail</a></td>
 
           {% for data in season %}
             <td>{{ data }}</td>
