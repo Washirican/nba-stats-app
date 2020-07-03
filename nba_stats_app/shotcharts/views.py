@@ -31,7 +31,7 @@ def get_player_list():
     """Gets full list of active and inactive players"""
 
     player_index_url = 'https://stats.nba.com/js/data/ptsd/stats_ptsd.js'
-    response = requests.get(player_index_url)
+    response = requests.get(player_index_url, headers=HEADERS)
 
     player_data = json.loads(response.content.decode()[17:-1])
 
