@@ -13,8 +13,8 @@ from django.shortcuts import render
 
 HEADERS = {
         'Host': 'stats.nba.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) '
-                      'Gecko/20100101 Firefox/72.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) '
+                      'Gecko/20100101 Firefox/77.0',
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
@@ -24,7 +24,9 @@ HEADERS = {
         'Referer': 'https://stats.nba.com/',
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
-        }
+    }
+
+BASE_URL = 'https://stats.nba.com/stats/'
 
 
 def get_player_list():
@@ -33,7 +35,7 @@ def get_player_list():
     player_index_url = 'https://stats.nba.com/js/data/ptsd/stats_ptsd.js'
     response = requests.get(player_index_url, headers=HEADERS)
 
-    player_data = json.loads(response.content.decode()[17:-1])
+    player_data = json.loads(response.content.decode(encoding='UTF-8')[17:-1])
 
     # Return list of dictionaries with Player ID as key
     players = []
@@ -58,12 +60,21 @@ def get_player_common_info(player_id):
         'PlayerID': player_id
         }
     endpoint = 'commonplayerinfo'
-    request_url = f'https://stats.nba.com/stats/{endpoint}?'
+    # request_url = f'https://stats.nba.com/stats/{endpoint}?'
+    request_url = f'{BASE_URL}{endpoint}?'
 
     response = requests.get(request_url, headers=HEADERS, params=parameters)
 
-    player_common_info = json.loads(response.content.decode())['resultSets'][0]
-    player_headline_stats = json.loads(response.content.decode())['resultSets'][1]
+    # question = response.json()['items'][0]
+    player_common_info = response.json()['resultSets'][0]
+    # player_common_info = json.loads(
+            # response.content.decode(encoding='UTF-8')
+            # )['resultSets'][0]
+
+    player_headline_stats = response.json()['resultSets'][1]
+    # player_headline_stats = json.loads(
+            # response.content.decode(encoding='UTF-8')
+            # )['resultSets'][1]
 
     return player_common_info, player_headline_stats
 
@@ -77,10 +88,12 @@ def get_player_seasons(player_id):
         }
 
     endpoint = 'playerprofilev2'
-    request_url = f'https://stats.nba.com/stats/{endpoint}?'
-
+    # request_url = f'https://stats.nba.com/stats/{endpoint}?'
+    request_url = f'{BASE_URL}{endpoint}?'
     response = requests.get(request_url, headers=HEADERS, params=parameters)
-    player_available_season_stats = json.loads(response.content.decode())['resultSets'][0]
+    player_available_season_stats = json.loads(
+            response.content.decode(encoding='UTF-8')
+            )['resultSets'][0]
 
     return player_available_season_stats
 
@@ -113,11 +126,13 @@ def get_player_game_log(player_id, season_year, season_type):
         }
 
     endpoint = 'playergamelogs'
-    request_url = f'https://stats.nba.com/stats/{endpoint}?'
-
+    # request_url = f'https://stats.nba.com/stats/{endpoint}?'
+    request_url = f'{BASE_URL}{endpoint}?'
     response = requests.get(request_url, headers=HEADERS, params=parameters)
 
-    player_season_gamelog = json.loads(response.content.decode())['resultSets'][0]
+    player_season_gamelog = json.loads(
+            response.content.decode(encoding='UTF-8')
+            )['resultSets'][0]
 
     return player_season_gamelog
 
@@ -182,13 +197,15 @@ def get_player_shot_list(player_id, season_year, game_id):
         }
 
     endpoint = 'shotchartdetail'
-    request_url = f'https://stats.nba.com/stats/{endpoint}?'
-
+    # request_url = f'https://stats.nba.com/stats/{endpoint}?'
+    request_url = f'{BASE_URL}{endpoint}?'
     response = requests.get(request_url, headers=HEADERS, params=parameters)
     # clean_response = clean_data(response)
     # all_shot_data = clean_response['Shot_Chart_Detail']
 
-    player_game_shot_list = json.loads(response.content.decode())['resultSets'][0]
+    player_game_shot_list = json.loads(
+            response.content.decode(encoding='UTF-8')
+            )['resultSets'][0]
 
     return player_game_shot_list
 
@@ -200,14 +217,14 @@ def get_game_box_score_summary(game_id):
         }
 
     endpoint = 'boxscoresummaryv2'
-    request_url = f'https://stats.nba.com/stats/{endpoint}?'
-
+    # request_url = f'https://stats.nba.com/stats/{endpoint}?'
+    request_url = f'{BASE_URL}{endpoint}?'
     response = requests.get(request_url, headers=HEADERS, params=parameters)
     # clean_response = clean_data(response)
     # all_shot_data = clean_response['Shot_Chart_Detail']
 
     game_box_score_summary = json.loads(
-            response.content.decode()
+            response.content.decode(encoding='UTF-8')
             )['resultSets'][0]
 
     return game_box_score_summary
@@ -337,8 +354,8 @@ def player_game_shot_chart(request, player_id, season_year, game_id):
             team_name = game[4]
             matchup = game[8]
             game_date = game[7][:10]
-            scoring_headline = f'{game[30]} points on {game[11]}/{game[12]} shooting ' \
-                               f'({game[14]}/{game[15]} from three)'
+            scoring_headline = f'{game[30]} points on {game[11]}/{game[12]} ' \
+                               f'shooting ({game[14]}/{game[15]} from three)'
 
     plt = plot_player_short_chart(
             player_game_shot_list,
@@ -364,7 +381,10 @@ def player_game_shot_chart(request, player_id, season_year, game_id):
     string = base64.b64encode(buf.read())
     uri = urllib.parse.quote(string)
 
-    return render(request, 'shotcharts/player_game_shot_chart.html', {'data': uri})
+    return render(request,
+                  'shotcharts/player_game_shot_chart.html',
+                  {'data': uri}
+                  )
     # ======================================================================= #
 
 
