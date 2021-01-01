@@ -282,14 +282,19 @@ def plot_player_short_chart(player_game_shot_list, player_name, team_name,
     return plt
 
 
-# NOTE (D. Rodriguez 2020-06-28): context variable needs to be a list of
-# dictionaries
+# NOTE (D. Rodriguez 2020-06-28): context variable needs to be a dictionary
 def home(request):
     """Display player list."""
-    player_list = get_player_list()
+    # player_list = get_player_list()
+
+    # context = {
+    #     'player_list': player_list,
+    #     }
+
+    player_common_info, player_headline_stats = get_player_common_info('1629029')
 
     context = {
-        'player_list': player_list
+        'player_headline_stats': player_headline_stats,
         }
 
     return render(request, 'shotcharts/home.html', context)
