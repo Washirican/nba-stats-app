@@ -7,14 +7,13 @@
   <h1>NBA Shot Charts Home</h1>
   <h2>Player List</h2>
 
-<!--  {% for player in player_list %}-->
-<!--    <div>-->
-<!--      <a href="{% url 'player-profile' player.player_id %}">{{ player.full_name }}</a>-->
-<!--    </div>-->
-<!--  {% endfor %}-->
+  {% for player in player_list %}
+    <div>
+      <a href="{% url 'player-profile' player.player_id %}">{{ player.full_name }}</a>
+    </div>
+  {% endfor %}
 
 
-  {{ player_headline_stats }}
 
 </body>
 </html>
