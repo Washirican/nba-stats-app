@@ -1,2 +1,1 @@
-# NBA-Stats-App
-Revise NBA shot charts app to work Django and Heroku.
+# NBA Shot Charts Python/Flask App
