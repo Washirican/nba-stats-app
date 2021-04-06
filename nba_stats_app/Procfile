@@ -1,1 +1,0 @@
-web: gunicorn nba_stats_app.wsgi
