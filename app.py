@@ -32,8 +32,9 @@ def index():
 
     # Turns string into dictionary
     data = json.loads(dict_str)
+    players = data['data']['players']
 
-    return render_template('index.html', data=data)
+    return render_template('index.html', data=players)
 
 
 if __name__ == '__main__':
