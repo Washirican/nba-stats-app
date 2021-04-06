@@ -1,6 +1,7 @@
 # --------------------------------------------------------------------------- #
 # D. Rodriguez, 2021-04-06, File created.
 # --------------------------------------------------------------------------- #
+import json
 from flask import Flask, render_template, request, Response
 from utils import get_http_response
 
@@ -25,7 +26,13 @@ HEADERS = {
 @app.route('/', methods=['GET', 'POST'])
 def index():
     player_index_url = 'https://stats.nba.com/js/data/ptsd/stats_ptsd.js'
-    data = get_http_response(player_index_url)
+    player_list = get_http_response(player_index_url)
+
+    dict_str = player_list.content.decode()[17:-1]
+
+    # Turns string into dictionary
+    data = json.loads(dict_str)
+
     return render_template('index.html', data=data)
 
 

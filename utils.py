@@ -10,8 +10,8 @@ def get_http_response(url):
 
     try:
         response = requests.get(url)
-        response_data = response.json()
-        return response_data
+        # response_data = response.json()
+        return response
     except:
         errors.append('Unable to get URL.')
         return {'error': errors}
