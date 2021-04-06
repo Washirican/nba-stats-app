@@ -33,6 +33,8 @@ def index():
     # Turns string into dictionary
     data = json.loads(dict_str)
     players = data['data']['players']
+    teams = data['data']['teams']
+    data_date = data['generated']
 
     return render_template('index.html', data=players)
 
