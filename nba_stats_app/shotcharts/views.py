@@ -6,6 +6,7 @@ import urllib
 import matplotlib.pyplot as plt
 import requests
 from django.shortcuts import render
+# from utils import get_http_response
 
 # TODO (D. Rodriguez 2020-06-30): Add error catching
 # TODO (D. Rodriguez 2020-06-30): Improve looks
@@ -25,6 +26,18 @@ HEADERS = {
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
         }
+
+
+def get_http_response(request_url, headers, parameters):
+    errors = []
+
+    try:
+        response = requests.get(request_url, headers=headers, params=parameters)
+        # recent_data = response.json()
+        return response
+    except:
+        errors.append('Unable to get URL.')
+        return {'error': errors}
 
 
 def get_player_list():
@@ -60,7 +73,8 @@ def get_player_common_info(player_id):
     endpoint = 'commonplayerinfo'
     request_url = f'https://stats.nba.com/stats/{endpoint}?'
 
-    response = requests.get(request_url, headers=HEADERS, params=parameters)
+    # response = requests.get(request_url, headers=HEADERS, params=parameters)
+    response = get_http_response(request_url, HEADERS, parameters)
 
     player_common_info = json.loads(response.content.decode())['resultSets'][0]
     player_headline_stats = json.loads(response.content.decode())['resultSets'][1]
