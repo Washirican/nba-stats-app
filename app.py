@@ -54,5 +54,10 @@ def index():
     return render_template('index.html', player_list=player_list)
 
 
+@app.route('/player_profile', methods=['GET', 'POST'])
+def player_profile(player_id):
+    return render_template('player_profile.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
