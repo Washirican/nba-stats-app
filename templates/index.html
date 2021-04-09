@@ -5,7 +5,16 @@
     <title>NBA Shot Charts</title>
 </head>
 <body>
-<h1>Player Index</h1>
-{{ data }}
+<h1>Player List</h1>
+
+
+{% for player in content.players %}
+    <div>
+        <a href="">
+            {{ player.full_name }}
+        </a>
+    </div>
+{% endfor %}
+
 </body>
 </html>

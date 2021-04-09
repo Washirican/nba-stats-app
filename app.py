@@ -32,11 +32,26 @@ def index():
 
     # Turns string into dictionary
     data = json.loads(dict_str)
-    players = data['data']['players']
-    teams = data['data']['teams']
-    data_date = data['generated']
+    all_players = data['data']['players']
+    player_list = []
 
-    return render_template('index.html', data=players)
+    for player in all_players:
+        player_list.append(
+                {
+                    'player_id': player[0],
+                    'full_name': player[1],
+                    'rookie_year': player[3],
+                    'last_year': player[4],
+                    'current_team_id': player[5],
+                    }
+                )
+
+    # teams = data['data']['teams']
+    # data_date = data['generated']
+
+    content = {'players': player_list}
+
+    return render_template('index.html', content=content)
 
 
 if __name__ == '__main__':
