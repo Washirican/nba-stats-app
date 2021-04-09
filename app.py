@@ -49,9 +49,9 @@ def index():
     # teams = data['data']['teams']
     # data_date = data['generated']
 
-    content = {'players': player_list}
+    # content = player_list
 
-    return render_template('index.html', content=content)
+    return render_template('index.html', player_list=player_list)
 
 
 if __name__ == '__main__':
