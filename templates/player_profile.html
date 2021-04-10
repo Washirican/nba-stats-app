@@ -1,10 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Player Profile</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+  </style>
+
+  <title>NBA Shot Charts Home: Player Profile</title>
 </head>
 <body>
+  <h1>Player Profile</h1>
+  <h2>{{ player_headline_stats.rowSet.0.1 }}</h2>
+
+    <h2>{{ player_headline_stats.name }}</h2>
+    <table>
+      {% for header in player_headline_stats.headers%}
+      <th>{{ header}} </th>
+      {% endfor %}
+
+      {% for row in player_headline_stats.rowSet %}
+        <tr>
+          {%for data in row %}
+            <td>{{ data }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor%}
+    </table>
+
+    <h2>{{ player_common_info.name }}</h2>
+    <table>
+      {% for header in player_common_info.headers%}
+      <th>{{ header}} </th>
+      {% endfor %}
+
+      {% for row in player_common_info.rowSet %}
+        <tr>
+          {%for data in row %}
+            <td>{{ data }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+
+    <h2>{{ player_available_season_stats.name }}</h2>
+    <table><th>Season Detail</th>
+      {%for header in player_available_season_stats.headers%}
+      <th>{{ header }} </th>
+      {% endfor %}
+
+      {% for season in player_available_season_stats.rowSet %}
+        <tr>
+          <td><a href="">Season Detail</a></td>
+
+          {% for data in season %}
+            <td>{{ data }}</td>
+          {% endfor %}
+
+        </tr>
+      {% endfor %}
+    </table>
+
 
 </body>
 </html>
+

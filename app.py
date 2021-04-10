@@ -23,10 +23,45 @@ HEADERS = {
         }
 
 
-@app.route('/', methods=['GET', 'POST'])
+def get_player_common_info(player_id):
+    """Get player details"""
+    parameters = {
+        'PlayerID': player_id
+        }
+    endpoint = 'commonplayerinfo'
+    request_url = f'https://stats.nba.com/stats/{endpoint}?'
+
+    # response = requests.get(request_url, headers=HEADERS, params=parameters)
+    response = get_http_response(request_url, HEADERS, parameters)
+
+    player_common_info = json.loads(response.content.decode())['resultSets'][0]
+    player_headline_stats = json.loads(response.content.decode())['resultSets'][1]
+
+    return player_common_info, player_headline_stats
+
+
+def get_player_seasons(player_id):
+    """Get player season's played per player ID"""
+    parameters = {
+        'LeagueID': '00',
+        'PerMode': 'PerGame',
+        'PlayerID': player_id
+        }
+
+    endpoint = 'playerprofilev2'
+    request_url = f'https://stats.nba.com/stats/{endpoint}?'
+
+    response = get_http_response(request_url, HEADERS, parameters)
+    player_available_season_stats = json.loads(response.content.decode())['resultSets'][0]
+
+    return player_available_season_stats
+
+
+@app.route('/', methods=['GET'])
 def index():
+    parameters = {}
     player_index_url = 'https://stats.nba.com/js/data/ptsd/stats_ptsd.js'
-    player_list = get_http_response(player_index_url)
+    player_list = get_http_response(player_index_url, HEADERS, parameters)
 
     dict_str = player_list.content.decode()[17:-1]
 
@@ -48,15 +83,25 @@ def index():
 
     # teams = data['data']['teams']
     # data_date = data['generated']
-
     # content = player_list
 
-    return render_template('index.html', player_list=player_list)
+    return render_template('index.html', content=player_list)
 
 
-@app.route('/player_profile', methods=['GET', 'POST'])
+@app.route('/player_profile/<player_id>', methods=['GET'])
 def player_profile(player_id):
-    return render_template('player_profile.html')
+    """Display player season stats."""
+    # player_id = 201939
+    player_id = player_id
+
+    player_common_info, player_headline_stats = get_player_common_info(player_id)
+    player_available_season_stats = get_player_seasons(player_id)
+
+    return render_template('player_profile.html',
+                           player_common_info=player_common_info,
+                           player_headline_stats=player_headline_stats,
+                           player_available_season_stats=player_available_season_stats
+                           )
 
 
 if __name__ == '__main__':

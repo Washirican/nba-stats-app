@@ -5,11 +5,11 @@ import requests
 import json
 
 
-def get_http_response(url):
+def get_http_response(request_url, headers, parameters):
     errors = []
 
     try:
-        response = requests.get(url)
+        response = requests.get(request_url, headers=headers, params=parameters)
         # response_data = response.json()
         return response
     except:
