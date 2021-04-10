@@ -23,6 +23,8 @@ HEADERS = {
         }
 
 
+# TODO (D. Rodriguez 2021-04-09): Implement background task (Redis?)
+#  queue to avoid timeout error.
 def get_player_common_info(player_id):
     """Get player details"""
     parameters = {
