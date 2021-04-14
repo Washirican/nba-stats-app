@@ -36,6 +36,9 @@ HEADERS = {
 #  queue to avoid timeout error.
 def get_player_common_info(player_id):
     """Get player details"""
+
+    # print("\nStarting get_player_common_info() task...")
+
     parameters = {
         'PlayerID': player_id
         }
@@ -48,11 +51,20 @@ def get_player_common_info(player_id):
     player_common_info = json.loads(response.content.decode())['resultSets'][0]
     player_headline_stats = json.loads(response.content.decode())['resultSets'][1]
 
+    # print('\n')
+    # print(player_common_info)
+    # print('\n')
+    # print(player_headline_stats)
+    # print('\n')
+
     return player_common_info, player_headline_stats
 
 
 def get_player_seasons(player_id):
     """Get player season's played per player ID"""
+
+    # print("\nStarting get_player_seasons() task...")
+
     parameters = {
         'LeagueID': '00',
         'PerMode': 'PerGame',
@@ -66,5 +78,9 @@ def get_player_seasons(player_id):
     # response = get_http_response(request_url, HEADERS, parameters)
 
     player_available_season_stats = json.loads(response.content.decode())['resultSets'][0]
+
+    # print('\n')
+    # print(player_available_season_stats)
+    # print('\n')
 
     return player_available_season_stats
