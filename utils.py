@@ -37,7 +37,7 @@ HEADERS = {
 def get_player_common_info(player_id):
     """Get player details"""
 
-    # print("\nStarting get_player_common_info() task...")
+    print("\nStarting get_player_common_info() task...")
 
     parameters = {
         'PlayerID': player_id
@@ -51,11 +51,11 @@ def get_player_common_info(player_id):
     player_common_info = json.loads(response.content.decode())['resultSets'][0]
     player_headline_stats = json.loads(response.content.decode())['resultSets'][1]
 
-    # print('\n')
-    # print(player_common_info)
-    # print('\n')
-    # print(player_headline_stats)
-    # print('\n')
+    print('\n')
+    print(player_common_info)
+    print('\n')
+    print(player_headline_stats)
+    print('\n')
 
     return player_common_info, player_headline_stats
 
