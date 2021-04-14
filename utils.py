@@ -37,7 +37,7 @@ HEADERS = {
 def get_player_common_info(player_id):
     """Get player details"""
 
-    print("\nStarting get_player_common_info() task...")
+    print(f'\nStarting get_player_common_info() task for player id: {player_id}')
 
     parameters = {
         'PlayerID': player_id
@@ -63,7 +63,7 @@ def get_player_common_info(player_id):
 def get_player_seasons(player_id):
     """Get player season's played per player ID"""
 
-    # print("\nStarting get_player_seasons() task...")
+    # print(f'\nStarting get_player_seasons() task for player id: {player_id}')
 
     parameters = {
         'LeagueID': '00',
