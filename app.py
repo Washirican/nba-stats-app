@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from rq import Queue
 from worker import conn
+from flask import Flask
 from utils import *
 
 q = Queue(connection=conn)
