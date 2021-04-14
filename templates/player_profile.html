@@ -44,24 +44,6 @@
       {% endfor %}
     </table>
 
-    <h2>{{ player_available_season_stats.name }}</h2>
-    <table><th>Season Detail</th>
-      {%for header in player_available_season_stats.headers%}
-      <th>{{ header }} </th>
-      {% endfor %}
-
-      {% for season in player_available_season_stats.rowSet %}
-        <tr>
-          <td><a href="">Season Detail</a></td>
-
-          {% for data in season %}
-            <td>{{ data }}</td>
-          {% endfor %}
-
-        </tr>
-      {% endfor %}
-    </table>
-
 
 </body>
 </html>
