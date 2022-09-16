@@ -7,15 +7,14 @@
 <body>
 <h1>Player List</h1>
 
-
 {% for player in content %}
     <div>
         <a href=" {{ url_for('player_profile', player_id=player.player_id) }}">
-            {{ player.full_name }}: {{ player.player_id}}
+            <!-- {{ player.full_name }}: {{ player.player_id}} -->
+            {{player}}
         </a>
     </div>
 {% endfor %}
 
 </body>
 </html>
-
