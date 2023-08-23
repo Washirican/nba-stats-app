@@ -59,6 +59,7 @@ def get_player_list():
                     'rookie_year': player[3],
                     'last_year': player[4],
                     'current_team_id': player[5],
+                    
                     }
                 )
 

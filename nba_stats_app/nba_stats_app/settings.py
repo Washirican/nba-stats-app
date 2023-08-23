@@ -26,7 +26,9 @@ SECRET_KEY = 'qvn&qu6@kibj2akrsml(_y^_bb_-i6lj9)ky7d9_a(_(y6_pch'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nbashotcharts.herokuapp.com']
+# ALLOWED_HOSTS = ['nbashotcharts.herokuapp.com']
+ALLOWED_HOSTS = []
+
 
 
 # Application definition

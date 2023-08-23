@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/NBA-Stats-App.iml" filepath="$PROJECT_DIR$/.idea/NBA-Stats-App.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/nba-stats-django-app-backup.iml" filepath="$PROJECT_DIR$/.idea/nba-stats-django-app-backup.iml" />
     </modules>
   </component>
 </project>
